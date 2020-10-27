@@ -1,0 +1,20 @@
+{
+  "name": "live-video",
+  "version": "1.0.0",
+  "description": "推流：指的是把采集阶段封包好的内容传输到服务器的过程。推流的设备可以是计算机也可 以是摄像机、或者手机。  \r  拉流：指服务器已有直播内容，用指定地址进行拉取播放的过程\r ### 流媒体服务器的几种协议\r  推流协议：RTMP  \r  拉流协议:RTMP、Http-Flv、hls、dash  \r  （1）hls、dash延迟比较严重 需要flash 基本不用\r  （2）Http-Flv 是给予RTMP进行封装的，B站提供Flv.js可以直接拉流 不需要flash\r  （3）RTMP 常用但需要flash",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vue-3020/live-video.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vue-3020/live-video/issues"
+  },
+  "homepage": "https://github.com/vue-3020/live-video#readme"
+}
