@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/vue-3020/live-video/issues"
   },
-  "homepage": "https://github.com/vue-3020/live-video#readme"
+  "homepage": "https://github.com/vue-3020/live-video#readme",
+  "dependencies": {
+    "md5": "^2.3.0"
+  }
 }

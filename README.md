@@ -61,10 +61,9 @@ nms.run();
 路径 URL:rtmp://localhost/live/  
 秘钥:STREAM_NAME
 
-### obs窗口捕获
+### obs 窗口捕获
 
-
-
+![Image text](./images/1.png)
 
 # 拉流 (格式不同)
 
@@ -85,4 +84,90 @@ http://localhost:8000/live/STREAM_NAME/index.m3u8
 DASH
 http://localhost:8000/live/STREAM_NAME/index.mpd
 
+```
+
+### 拉流代码
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+  </head>
+  <body>
+    <script src="https://cdn.bootcss.com/flv.js/1.4.0/flv.min.js"></script>
+    <video muted id="videoElement" style="width: 80%" controls="controls"></video>
+    <script>
+      debugger
+      if (flvjs.isSupported()) {
+        var videoElement = document.getElementById("videoElement");
+        var flvPlayer = flvjs.createPlayer({
+          type: "flv",
+          url: "http://localhost:8000/live/wuxinkai.flv",
+        });
+        flvPlayer.attachMediaElement(videoElement);
+        flvPlayer.load();
+        flvPlayer.play();
+      }
+    </script>
+  </body>
+</html>
+```
+
+# 推流增加密钥
+
+1.原始推流或播放地址:
+
+```
+rtmp://192.168.0.10/live/stream
+```
+
+2.配置验证秘钥为: 'nodemedia2017privatekey'，同时打开播放和发布的鉴权开关
+
+```
+const config = {
+  rtmp: {
+    port: 1935,
+    chunk_size: 60000,
+    gop_cache: true,
+    ping: 60,
+    ping_timeout: 30
+  },
+  http: {
+    port: 8000,
+    allow_origin: '*'
+  },
+  auth: {  //鉴权系统
+    play: true,
+    publish: true,
+    secret: 'nodemedia2017privatekey'
+  }
+};
+```
+3.请求过期时间为: 2017/8/23 11:25:21 ,则请求过期时间戳为: 转成10位数字
+```
+1503458721
+```
+4.md5计算结合“完整流地址-失效时间-密钥”的字符串:
+```
+HashValue = md5("/live/stream-1503458721-nodemedia2017privatekey”)
+HashValue = 80c1d1ad2e0c2ab63eebb50eed64201a
+```
+5.最终请求地址为
+```
+rtmp://192.168.0.10/live/stream?sign=1503458721-80c1d1ad2e0c2ab63eebb50eed64201a
+注意：'sign' 关键字不能修改为其他的
+```
+# 获取加密 视频 
+加密后的 URL 形式:
+
+```
+rtmp://hostname:port/appname/stream?sign=expires-HashValue 
+http://hostname:port/appname/stream.flv?sign=expires-HashValue 
+ws://hostname:port/appname/stream.flv?sign=expires-HashValu
+```
+拼接成我们的地址
+```
+http://192.168.1.5:8000/live/wuxinkai?sign=1603808610-2bada986b6dc6b7e2d0247897c678cde
 ```
