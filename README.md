@@ -64,6 +64,7 @@ nms.run();
 ### obs 窗口捕获
 
 ![Image text](./images/1.png)
+![Image text](./images/2.png)
 
 # 拉流 (格式不同)
 
@@ -145,29 +146,124 @@ const config = {
   }
 };
 ```
-3.请求过期时间为: 2017/8/23 11:25:21 ,则请求过期时间戳为: 转成10位数字
+
+3.请求过期时间为: 2017/8/23 11:25:21 ,则请求过期时间戳为: 转成 10 位数字
+
 ```
 1503458721
 ```
-4.md5计算结合“完整流地址-失效时间-密钥”的字符串:
+
+4.md5 计算结合“完整流地址-失效时间-密钥”的字符串:
+
 ```
 HashValue = md5("/live/stream-1503458721-nodemedia2017privatekey”)
 HashValue = 80c1d1ad2e0c2ab63eebb50eed64201a
 ```
+
 5.最终请求地址为
+
 ```
 rtmp://192.168.0.10/live/stream?sign=1503458721-80c1d1ad2e0c2ab63eebb50eed64201a
 注意：'sign' 关键字不能修改为其他的
 ```
-# 获取加密 视频 
+
+# 获取加密 视频
+
 加密后的 URL 形式:
 
 ```
-rtmp://hostname:port/appname/stream?sign=expires-HashValue 
-http://hostname:port/appname/stream.flv?sign=expires-HashValue 
+rtmp://hostname:port/appname/stream?sign=expires-HashValue
+http://hostname:port/appname/stream.flv?sign=expires-HashValue
 ws://hostname:port/appname/stream.flv?sign=expires-HashValu
 ```
+
 拼接成我们的地址
+
 ```
 http://192.168.1.5:8000/live/wuxinkai?sign=1603808610-2bada986b6dc6b7e2d0247897c678cde
 ```
+
+# 流事件
+
+```
+nms.run();
+//链接了流
+nms.on('preConnect', (id, args) => {
+  console.log('[链接流1]', `id=${id} args=${JSON.stringify(args)}`);
+  // let session = nms.getSession(id);
+  // session.reject();
+});
+
+//链接了流
+nms.on('postConnect', (id, args) => {
+  console.log('[链接流2]', `id=${id} args=${JSON.stringify(args)}`);
+});
+
+// 断开了流
+nms.on('doneConnect', (id, args) => {
+  console.log('[断开了流]', `id=${id} args=${JSON.stringify(args)}`);
+});
+
+//开始推流 流链接
+nms.on('prePublish', (id, StreamPath, args) => {
+  console.log('[预发布 开始推流]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+  // let session = nms.getSession(id);
+  // session.reject();
+});
+//流链接
+nms.on('postPublish', (id, StreamPath, args) => {
+  console.log('[发布后 链接成功]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+});
+//流未链接
+nms.on('donePublish', (id, StreamPath, args) => {
+  console.log('[断开前执行得方法]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+});
+
+nms.on('prePlay', (id, StreamPath, args) => {
+  console.log('[NodeEvent on prePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+  // let session = nms.getSession(id);
+  // session.reject();
+});
+
+//index.html链接成功
+nms.on('postPlay', (id, StreamPath, args) => {
+  console.log('[index.html链接成功]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+});
+
+
+nms.on('donePlay', (id, StreamPath, args) => {
+  console.log('[NodeEvent on donePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+});
+```
+
+# 部署服务器
+
+```
+```
+# 转换成https的方法
+
+# 查看流信息
+服务器统计
+```
+http://localhost:8000/api/server
+```
+流信息统计
+```
+http://localhost:8000/api/streams
+```
+配置授权信息才能访问
+```
+const config = {
+ .......
+   auth: {
+    api : true,
+    api_user: 'admin',
+    api_pass: 'nms2018',
+  },
+ 
+ ......
+}
+```
+
+
+
